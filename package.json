@@ -1,0 +1,31 @@
+{
+  "name": "node-project",
+  "version": "1.0.0",
+  "description": "node learning test",
+  "main": "index.js",
+  "scripts": {
+    "promise": "node src/promise/promise4-demo.js",
+    "test-promise": "promises-aplus-tests src/promise/promise4.js",
+    "lock": "node src/lock/use-lock1.js",
+    "proxy": "run-p target-server proxy-server",
+    "target-server": "node src/proxy/target-server.js",
+    "proxy-server": "node src/proxy/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://node-project.git"
+  },
+  "keywords": [
+    "test",
+    "node"
+  ],
+  "author": "liangxy",
+  "license": "ISC",
+  "dependencies": {
+    "nodemon": "^2.0.7",
+    "oppressor": "0.0.1"
+  },
+  "devDependencies": {
+    "promises-aplus-tests": "^2.1.2"
+  }
+}
