@@ -67,7 +67,7 @@ class MyPromise {
             } catch (e) {
               reject(e)
             }
-          })
+          }, 0)
         })
       } else if (this.status === 'FULFILLED') {
         setTimeout(() => {
