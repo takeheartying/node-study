@@ -1,4 +1,4 @@
-// 2个不同代码的进程，lock unlock isLocked  + lock有问题？，timeout + lock的原子性问题？？
+// 2个不同代码的进程，lock unlock isLocked  + lock有问题？，curTimeOut + lock的原子性问题？？
 
 // +cluster，fock出多个进程，操作锁
 const Locker = require('./lock.js')
@@ -7,13 +7,37 @@ const path = require('path')
 const fs = require('fs')
 const msgQueue = []
 const locker = new Locker()
+let initTimeOut = 0.5 // ms
+let additionalTimeOut = 0.5 // 每次额外再给的超时增量
+let curTimeOut = initTimeOut // ms
+let hasFinishEachTask = false
+let timer = null
 
+// 超时后延长超时时间
+function handleCurTimeOut () {
+  if (!additionalTimeOut) return
+  timer && clearTimeout(timer)
+  timer = setTimeout(() => {
+    if (!hasFinishEachTask) {
+      curTimeOut = additionalTimeOut
+      locker.changeTimeOut(additionalTimeOut) // 再给额外additionalTimeOut的时间
+      handleCurTimeOut()
+    } else {
+      clearTimeout(timer)
+      curTimeOut = initTimeOut // 重置
+    } }, curTimeOut)
+}
 
 function writeWorkerFile (msg) {
-  locker.lock().then(() => {
+  hasFinishEachTask = false // 初始值
+  handleCurTimeOut()
+  locker.lock(initTimeOut).then(() => {
     // 优先写入最新的：
     fs.writeFile(path.resolve(__dirname, './test.txt'), msg.fileTxt, err => {
-      if (err) return console.error(err)
+      hasFinishEachTask = true
+      if (err) {
+        return console.error(err)
+      }
       console.log()
       console.log(`${msg.workerId}文件已写入`)
       msg.cb && msg.cb()
@@ -59,7 +83,7 @@ function run () {
       setTimeout(() => {
         // 发送信息：要写入文件的消息
         process.send({
-          fileTxt: `Now workerId = ${cluster.worker.id}; index = ${i}`,
+          fileTxt: `Now 进程 workerId = ${cluster.worker.id}; index = ${i}`,
           needWrite: true,
           workerId: cluster.worker.id,
           errorCb: () => {},
