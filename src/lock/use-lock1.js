@@ -1,4 +1,4 @@
-// 2个不同代码的进程，lock unlock isLocked  + lock有问题？，timeout + lock？？
+// 2个不同代码的进程，lock unlock isLocked  + lock有问题？，timeout + lock的原子性问题？？
 
 // +cluster，fock出多个进程，操作锁
 const Locker = require('./lock.js')
@@ -13,7 +13,7 @@ function writeWorkerFile (msg) {
   locker.lock().then(() => {
     // 优先写入最新的：
     fs.writeFile(path.resolve(__dirname, './test.txt'), msg.fileTxt, err => {
-      if (err) console.error(err)
+      if (err) return console.error(err)
       console.log()
       console.log(`${msg.workerId}文件已写入`)
       msg.cb && msg.cb()
