@@ -1,4 +1,4 @@
-// 2个不同代码的进程，lock unlock isLocked  + lock有问题？，curTimeOut + lock的原子性问题？？
+// 2个不同代码的进程，lock unlock isLocked  + lock有问题？，timeOut + lock的原子性问题？？
 
 // +cluster，fock出多个进程，操作锁
 const Locker = require('./lock.js')
