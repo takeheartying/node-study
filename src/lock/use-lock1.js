@@ -52,7 +52,7 @@ function writeWorkerFile (msg) {
     console.log(`${msg.workerId}: 锁文件有误`)
     console.error(e)
     // TODO: 怎么再次请求资源？？或其他处理？？
-    msg.errorCb && msg.errorCb()
+    msg.errorCb && msg.errorCb(e)
   })
 }
 
@@ -86,7 +86,9 @@ function run () {
           fileTxt: `Now 进程 workerId = ${cluster.worker.id}; index = ${i}`,
           needWrite: true,
           workerId: cluster.worker.id,
-          errorCb: () => {},
+          errorCb: (e) => {
+            // 锁错误处理。。。
+          },
           cb: () => {}
         })
       }, Math.random())
