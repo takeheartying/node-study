@@ -3,6 +3,10 @@ const port = 8085
 const path = require('path')
 const fs = require('fs')
 const http = require('http')
+const sirv = require('sirv')
+
+// start static file server
+const staticServe = sirv(path.resolve(__dirname, '../public'))
 const server = http.createServer(function (req, res) {
   // res.setHeader('Content-Type', 'application/json') // 浏览器显示中文
   console.log('req.url = ', req.url)
@@ -23,7 +27,7 @@ const server = http.createServer(function (req, res) {
     })
     readStream.pipe(res)
   } else {
-    res.end('404')
+    staticServe(req, res)
   }
   req.setEncoding('utf-8')
 })

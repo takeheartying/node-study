@@ -26,6 +26,7 @@
     "oppressor": "0.0.1"
   },
   "devDependencies": {
-    "promises-aplus-tests": "^2.1.2"
+    "promises-aplus-tests": "^2.1.2",
+    "sirv": "^1.0.11"
   }
 }
