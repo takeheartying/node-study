@@ -1,6 +1,6 @@
 // 2. 用原生模块实现反向代理服务器
-const proxyPort = 8086
-const serverPort = 8085
+let proxyPort = 8086
+let serverPort = 8085
 const http = require('http')
 
 // http 代理
@@ -49,4 +49,12 @@ const server = http.createServer(function (httpReq, httpRes) {
 })
 server.listen(proxyPort, () => {
   console.log('http代理服务器 正在启动, port = ' + proxyPort)
+})
+server.on('error', (e) => {
+  if (e.code === 'EADDRINUSE') {
+    server.close()
+    server.listen(++proxyPort)
+  } else {
+    console.dir(e)
+  }
 })
